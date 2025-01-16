@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = ({ setIsAuthenticated, setUserType }) => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: '',
-    password: ''
+    password: '',
+    userType: 'company' // default to company login
   });
 
   const handleChange = (e) => {
@@ -18,12 +19,23 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Mock authentication (replace with your API call for actual login)
-    if (credentials.email === 'user@example.com' && credentials.password === 'password') {
-      setIsAuthenticated(true); // Update authentication state
-      navigate('/dashboard'); // Navigate to the dashboard
-    } else {
-      alert('Invalid credentials'); // Show error
+    // Mock authentication for both user types
+    if (credentials.userType === 'company' && 
+        credentials.email === 'user@example.com' && 
+        credentials.password === 'password') {
+      setIsAuthenticated(true);
+      setUserType('company');
+      navigate('/dashboard');
+    } 
+    else if (credentials.userType === 'client' && 
+             credentials.email === 'client@example.com' && 
+             credentials.password === 'password') {
+      setIsAuthenticated(true);
+      setUserType('client');
+      navigate('/client-dashboard');
+    }
+    else {
+      alert('Invalid credentials');
     }
   };
 
@@ -36,10 +48,21 @@ const Login = ({ setIsAuthenticated }) => {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label 
-              htmlFor="email" 
-              className="block text-sm font-medium text-gray-700"
+            <label className="block text-sm font-medium text-gray-700">
+              Login Type
+            </label>
+            <select
+              name="userType"
+              value={credentials.userType}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="company">Company</option>
+              <option value="client">Client</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
@@ -54,10 +77,7 @@ const Login = ({ setIsAuthenticated }) => {
             />
           </div>
           <div className="space-y-2">
-            <label 
-              htmlFor="password" 
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input

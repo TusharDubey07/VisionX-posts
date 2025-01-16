@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function FeatureComingSoon() {
   return (
@@ -27,12 +28,12 @@ export default function FeatureComingSoon() {
         </div>
 
         {/* Back to Home Link */}
-        <a
-          href="/"
+        <Link
+          to="/dashboard"
           className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     </div>
   );

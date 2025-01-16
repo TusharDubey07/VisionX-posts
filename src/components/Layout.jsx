@@ -4,17 +4,28 @@ import { HiMenuAlt2 } from 'react-icons/hi';
 import { Navbar } from './Navbar';
 import { CreatePostModal } from './CreatePostModal';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, userType }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false); 
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
 
   const handleCreatePost = () => {
-    setIsCreatePostModalOpen(true); 
+    setIsCreatePostModalOpen(true);
   };
 
   const handleClosePostModal = () => {
-    setIsCreatePostModalOpen(false); 
+    setIsCreatePostModalOpen(false);
   };
+
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { 
+        selectedClient,
+        setSelectedClient
+      });
+    }
+    return child;
+  });
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -32,13 +43,13 @@ const Layout = ({ children }) => {
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out z-30 lg:z-0`}
       >
-        <Sidebar />
+        <Sidebar userType={userType} selectedClient={selectedClient} />
       </div>
 
-   {/* Main content */}
-   <div className="flex-1 flex flex-col overflow-auto">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Navbar */}
-        <Navbar onCreatePost={handleCreatePost} />
+        <Navbar onCreatePost={handleCreatePost} userType={userType} />
 
         {/* Mobile header */}
         <div className="lg:hidden flex items-center p-4 border-b">
@@ -51,7 +62,7 @@ const Layout = ({ children }) => {
         </div>
 
         {/* Page content */}
-        <div className="p-4 flex-1 overflow-auto">{children}</div>
+        <div className="p-4 flex-1 overflow-auto">{childrenWithProps}</div>
       </div>
 
       {/* Create Post Modal */}
